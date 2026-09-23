@@ -1,0 +1,190 @@
+{
+  "name": "ICN292-Lab3-Oyarzun-Nicolas-Workflow3",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 12
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -784,
+        544
+      ],
+      "id": "09fba925-d342-45a6-b227-9fb201c2b5ef",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "svhoPJrDy2V4ML99",
+          "mode": "list",
+          "cachedResultName": "Registro",
+          "cachedResultUrl": "/projects/bA4KPVoYADfnETKw/datatables/svhoPJrDy2V4ML99"
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -560,
+        544
+      ],
+      "id": "f579c6fa-51b5-4515-b7db-36b4d306f696",
+      "name": "Obtener_datos"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "sum",
+              "field": "Valor_D"
+            },
+            {
+              "field": "Ruta"
+            }
+          ]
+        },
+        "fieldsToSplitBy": "Ruta",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        -368,
+        544
+      ],
+      "id": "972a488a-99e3-4afb-9eae-6616787964a4",
+      "name": "Total día"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0cbb678d-748c-427b-b18a-3ed91fc54e1e",
+              "name": "Total_Día",
+              "value": "={{ $json.sum_sum_Monto }}",
+              "type": "string"
+            },
+            {
+              "id": "e05d698f-7993-43a9-b2bb-b3c74dd00942",
+              "name": "Tasa_Aprobación",
+              "value": "={{ ($json.max_count_Ruta / $json.sum_count_Ruta)*100}}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {
+          "ignoreConversionErrors": true
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        48,
+        544
+      ],
+      "id": "0206427a-71ff-41f5-897d-bfb460989a8c",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "sum",
+              "field": "sum_Monto"
+            },
+            {
+              "aggregation": "sum",
+              "field": "count_Ruta"
+            },
+            {
+              "aggregation": "max",
+              "field": "count_Ruta"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        544
+      ],
+      "id": "037115ed-f3dd-4b61-a524-7b1d4a6e62fd",
+      "name": "Total día1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Obtener_datos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener_datos": {
+      "main": [
+        [
+          {
+            "node": "Total día",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Total día": {
+      "main": [
+        [
+          {
+            "node": "Total día1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Total día1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "ecf8c328-928c-4443-9311-310343613160",
+  "meta": {
+    "instanceId": "210f1c116f9453e03424b044c820d8d2ac9c59632a557d872ac8ada123624137"
+  },
+  "nodeGroups": [],
+  "id": "ryWyKGBtjoXrpyJz",
+  "tags": []
+}
